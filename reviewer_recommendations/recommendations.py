@@ -50,8 +50,9 @@ class ReviewerRecommendation(object):
     def get_top_n_recommentations(self, contributions, n=5):
         return nlargest(n, contributions, key=itemgetter(1))
 
-    def get_recommendations(self, pull, term='arbisoft', excluded_emails=[], n=5):
-        recommendations = self.recommendations_by_contribution(pull)
+    def get_recommendations(self, pull, term='arbisoft', excluded_emails=[], n=5,
+                            repo_path='~/IdeaProjects/philu/edx-platform'):
+        recommendations = self.recommendations_by_contribution(pull, repo_path)
         recommendations = self.filter_recomentations_by_email_must_contains(recommendations, term)
         recommendations = self.filter_recomentations_excluded_emails(recommendations, excluded_emails)
         recommendations = self.get_top_n_recommentations(recommendations, n)
