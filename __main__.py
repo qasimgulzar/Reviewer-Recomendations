@@ -14,8 +14,11 @@ if __name__ == '__main__':
     )
 
     for pull in recommend.get_pulls():
-
-        recommendations = recommend.get_recommendations(pull, term='arbisoft', excluded_emails=[], n=5)
+        recommendations = recommend.get_recommendations(
+            pull,
+            term='arbisoft', excluded_emails=[], n=5,
+            repo_path=os.getenv('PATH_GIT_REPO', '~/IdeaProjects/philu/edx-platform')
+        )
 
         log.debug('------------------------------------------')
 
