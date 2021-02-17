@@ -1,4 +1,5 @@
 import logging
+import os
 from heapq import nlargest
 from operator import itemgetter
 
@@ -30,6 +31,10 @@ class ReviewerRecommendation(object):
     def recommendations_by_contribution(self, pull, repo_path='~/IdeaProjects/philu/edx-platform'):
         contributions = dict()
         for file in self.get_files(pull):
+
+            if not os.path.exists(os.path.join(repo_path, file.filename)):
+                continue
+
             for commit, lines in self.get_blames(repo_path, file):
                 count = contributions.get(commit.author.email, 0) + len(lines)
                 contributions[commit.author.email] = count
