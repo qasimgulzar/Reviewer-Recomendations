@@ -3,7 +3,7 @@ import os
 
 from reviewer_recommendations.recommendations import ReviewerRecommendation
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 log = logging.getLogger(__name__)
 
@@ -20,6 +20,6 @@ if __name__ == '__main__':
             repo_path=os.getenv('PATH_GIT_REPO', '~/IdeaProjects/philu/edx-platform')
         )
 
-        log.debug('------------------------------------------')
-
-        log.info(recommendations)
+        log.info("{title} ({recommendations})".format(
+            title=pull.title,
+            recommendations=','.join([rec[0] for rec in recommendations])))

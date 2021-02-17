@@ -20,9 +20,9 @@ class ReviewerRecommendation(object):
         repo = git.Repo(repo_path)
         return repo.blame('HEAD', file.filename)
 
-    def get_pulls(self, repo_name='philanthropy-u/edx-platform'):
+    def get_pulls(self, repo_name='philanthropy-u/edx-platform', *args, **kwargs):
         repo = self.github_client.get_repo(repo_name)
-        return repo.get_pulls()
+        return repo.get_pulls(**kwargs)
 
     def get_files(self, pull):
         return pull.get_files()
