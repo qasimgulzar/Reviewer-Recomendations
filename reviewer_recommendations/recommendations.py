@@ -9,6 +9,12 @@ from github import Github
 log = logging.getLogger(__name__)
 
 
+class CloneProgress(git.RemoteProgress):
+    def update(self, op_code, cur_count, max_count=None, message=''):
+        if message:
+            log.debug(message)
+
+
 class ReviewerRecommendation(object):
     def __init__(self, *args, **kwargs):
         self.github_auth_token = kwargs.get('github_user_access_token', None)
@@ -16,6 +22,11 @@ class ReviewerRecommendation(object):
         self.git_repo_name = kwargs.get('git_repo_name', None)
 
         self.github_client = Github(self.github_auth_token)
+
+    def clone(self, repo_name='philanthropy-u/edx-platform', branch='master'):
+        repo = self.github_client.get_repo(repo_name)
+        log.info('cloning {repo} ...'.format(repo=repo_name))
+        git.Repo.clone_from(repo.clone_url, self.workspace_dir, branch=branch, progress=CloneProgress())
 
     def get_blames(self, repo_path, file):
         repo = git.Repo(repo_path)
