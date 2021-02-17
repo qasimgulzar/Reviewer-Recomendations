@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 if __name__ == '__main__':
-    l_repo = git.Repo('/Users/qasimgulzar/IdeaProjects/philu/edx-platform')
+    l_repo = git.Repo(os.getenv("PATH_GIT_REPO",'~/IdeaProjects/philu/edx-platform'))
     repo = g.get_repo('philanthropy-u/edx-platform')
 
     commits = dict()
