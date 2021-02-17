@@ -1,29 +1,34 @@
 import logging
+import os
 from heapq import nlargest
 from operator import itemgetter
 
-from github import Github
 import git
+from github import Github
 
-g = Github("git-hub-access-token")
+g = Github(os.getenv('GITHUB_USER_ACCESS_TOKEN', 'github-user-access-token'))
 
-log = logging
+logging.basicConfig(level=logging.DEBUG)
+
+log = logging.getLogger(__name__)
 
 if __name__ == '__main__':
     l_repo = git.Repo('/Users/qasimgulzar/IdeaProjects/philu/edx-platform')
     repo = g.get_repo('philanthropy-u/edx-platform')
 
     commits = dict()
-    excluded_emails = ['ahsan.haq@arbisoft.com', 'zia.fazal@arbisoft.com', 'waheed.ahmed@arbisoft.com']
+    excluded_emails = []
     for pull in repo.get_pulls():
         for file in pull.get_files():
-            for commit in l_repo.iter_commits(paths=file.filename):
-                log.info('{filename} - {author}'.format(filename=file.filename, author=commit.author))
+            for commit, lines in l_repo.blame('HEAD', file.filename):
+                log.debug('{author} has contributed {total_lines} lines in {filename}'.format(filename=file.filename,
+                                                                                              author=commit.author,
+                                                                                              total_lines=len(lines)))
 
-                count = commits.get(commit.author.email, 0) + 1
+                count = commits.get(commit.author.email, 0) + len(lines)
                 commits[commit.author.email] = count
 
-        log.info('------------------------------------------')
+        log.debug('------------------------------------------')
 
     commits = commits.items()
     commits = filter(lambda x: 'arbisoft' in x[0] and x[0] not in excluded_emails, commits)
